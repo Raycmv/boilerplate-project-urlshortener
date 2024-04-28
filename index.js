@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const dns = require('dns');
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -34,6 +35,12 @@ app.post('/api', (req, res) => {
     if (!url) {
         return res.status(400).json({ error: 'URL missing in request body' });
     }
+    dns.lookup(url, (err, address) => {
+      if (err) { console.error('Error:', err);
+           res.status(404).json({ error: 'No es una url valida' });
+           return;
+       }
+     });
 
     // Generar un ID corto único
     let shortId = generateShortId();
